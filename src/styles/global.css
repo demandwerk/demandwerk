@@ -2,13 +2,13 @@
 @import '@fontsource-variable/inter';
 
 :root {
-  /* Copper replaces the old site's brown (#8d6d36); teal and ink come from the logo. */
-  --copper: #b87333;
-  --copper-strong: #a85f27;   /* buttons and small text on white (AA with white) */
-  --copper-hover: #8f4f1f;
-  --copper-tint: #f8ede4;
+  /* Teal and ink come from the logo. Copper (in place of the old site's brown)
+     is the tertiary color, used as warm shaded backgrounds. */
   --teal: #3d867f;
-  --teal-strong: #337570;    /* small text and white-on-teal (AA) */
+  --teal-strong: #337570;    /* buttons, small text and white-on-teal (AA) */
+  --teal-hover: #2a615c;
+  --copper: #b87333;
+  --copper-tint: #f6e9dd;
   --teal-tint: #e7f1ef;
 
   --ink: #1a1a1a;
@@ -17,7 +17,7 @@
   --muted: #5b6270;
   --line: #e4e6eb;
   --paper: #ffffff;
-  --tint: #f7f4ef;
+  --tint: #fbf3ec;      /* light copper */
 
   --display: 'Archivo Variable', 'Arial Narrow', Arial, sans-serif;
   --body: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -76,8 +76,8 @@ p { margin: 0 0 1em; }
   padding: 16px 24px; border-radius: 999px; border: 2px solid transparent;
   text-decoration: none; cursor: pointer; transition: background .15s, color .15s, border-color .15s;
 }
-.btn--primary { background: var(--copper-strong); color: #fff; }
-.btn--primary:hover { background: var(--copper-hover); color: #fff; }
+.btn--primary { background: var(--teal-strong); color: #fff; }
+.btn--primary:hover { background: var(--teal-hover); color: #fff; }
 .btn--ghost { border-color: currentColor; color: inherit; }
 .btn--ghost:hover { background: rgb(26 26 26 / 5%); }
 
