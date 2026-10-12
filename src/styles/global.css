@@ -5,9 +5,10 @@
   /* Copper replaces the old site's brown (#8d6d36); teal and ink come from the logo. */
   --copper: #b87333;
   --copper-strong: #a85f27;   /* buttons and small text on white (AA with white) */
-  --copper-hover: #8f4f1f;   /* also small labels on tinted backgrounds */
+  --copper-hover: #8f4f1f;
   --copper-tint: #f8ede4;
   --teal: #3d867f;
+  --teal-strong: #337570;    /* small text and white-on-teal (AA) */
   --teal-tint: #e7f1ef;
 
   --ink: #1a1a1a;
@@ -39,7 +40,7 @@ body {
 }
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-underline-offset: 3px; }
-:focus-visible { outline: 3px solid var(--copper); outline-offset: 2px; border-radius: 4px; }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
 
 h1, h2, h3 {
   font-family: var(--display);
@@ -64,7 +65,7 @@ p { margin: 0 0 1em; }
   font: 700 0.78rem/1 var(--body);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--copper-hover);
+  color: var(--teal-strong);
   margin-bottom: 18px;
 }
 .lede { font-size: clamp(1.1rem, 1.6vw, 1.25rem); color: var(--muted); max-width: 60ch; }
