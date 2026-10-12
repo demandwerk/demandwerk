@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { company } from '../site';
+
+interface Props { title?: string; description?: string; noindex?: boolean }
+const { title, description = company.description, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} | ${company.name}` : `${company.name}: ${company.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: company.name,
+  url: Astro.site?.href,
+  description: company.description,
+  ...(company.email && { email: company.email }),
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={company.name} />
+    <meta name="theme-color" content="#0e1116" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .skip { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--accent); color: #fff; padding: 10px 16px; border-radius: 6px; }
+  .skip:focus { left: 8px; }
+</style>

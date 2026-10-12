@@ -1,0 +1,57 @@
+---
+// Submissions go to Web3Forms, which emails them to you (no backend needed).
+// Set company.formKey in src/site.ts to connect it.
+import { company, practiceAreas } from '../site';
+---
+<form class="contact" method="POST" action="https://api.web3forms.com/submit" data-form-key={company.formKey}>
+  <input type="hidden" name="access_key" value={company.formKey} />
+  <input type="hidden" name="subject" value="New inquiry from demandwerk.com" />
+  <input type="hidden" name="from_name" value={company.name + ' website'} />
+  <input type="hidden" name="redirect" value="" />
+  <p class="visually-hidden"><label>Leave this unchecked <input type="checkbox" name="botcheck" tabindex="-1" /></label></p>
+  <div class="grid">
+    <label class="field"><span>Your name</span><input name="name" autocomplete="name" required /></label>
+    <label class="field"><span>Firm</span><input name="firm" autocomplete="organization" required /></label>
+    <label class="field"><span>Email</span><input name="email" type="email" autocomplete="email" required /></label>
+    <label class="field"><span>Phone</span><input name="phone" type="tel" autocomplete="tel" /></label>
+    <label class="field field--full"><span>Main practice area</span>
+      <select name="practice_area">
+        <option value="">Choose one…</option>
+        {practiceAreas.map((p) => <option>{p}</option>)}
+        <option>Other / several</option>
+      </select>
+    </label>
+    <label class="field field--full"><span>What would you like more of?</span><textarea name="message" rows="4" placeholder="Case types, areas you serve, what you’ve tried so far…"></textarea></label>
+  </div>
+  <button class="btn btn--primary contact__btn" type="submit">Request a free review</button>
+  <p class="contact__error" hidden>
+    This form isn’t connected yet.{company.email && <> Email us at <a href={`mailto:${company.email}`}>{company.email}</a>.</>}
+  </p>
+</form>
+
+<script>
+  for (const form of document.querySelectorAll<HTMLFormElement>('form.contact')) {
+    form.querySelector<HTMLInputElement>('input[name="redirect"]')!.value = `${location.origin}/thanks/`;
+    form.addEventListener('submit', (e) => {
+      if (form.dataset.formKey) return;
+      e.preventDefault();
+      form.querySelector<HTMLElement>('.contact__error')!.hidden = false;
+    });
+  }
+</script>
+
+<style>
+  .contact { background: #fff; color: var(--text); border-radius: 18px; padding: clamp(22px, 3vw, 36px); box-shadow: var(--shadow); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+  .field--full { grid-column: 1 / -1; }
+  .field input, .field select, .field textarea {
+    font: 400 1rem/1.4 var(--body); color: var(--text);
+    padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; width: 100%;
+  }
+  .field textarea { resize: vertical; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgb(255 90 31 / 18%); }
+  .contact__btn { width: 100%; margin-top: 18px; }
+  .contact__error { margin: 12px 0 0; padding: 12px 14px; border-radius: 10px; background: var(--accent-tint); color: var(--ink); font-size: 0.9rem; font-weight: 600; }
+  @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+</style>

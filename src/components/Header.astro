@@ -1,0 +1,29 @@
+---
+import Logo from './Logo.astro';
+import { nav } from '../site';
+---
+<header class="hdr">
+  <div class="wrap hdr__in">
+    <Logo />
+    <nav aria-label="Main">
+      <ul>
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+    <a class="btn btn--primary hdr__cta" href="/#contact">Book a call</a>
+  </div>
+</header>
+
+<style>
+  .hdr { position: sticky; top: 0; z-index: 50; background: rgb(14 17 22 / 92%); backdrop-filter: blur(10px); color: #fff; border-bottom: 1px solid rgb(255 255 255 / 8%); }
+  .hdr__in { display: flex; align-items: center; gap: 32px; height: 72px; }
+  nav { margin-left: auto; }
+  ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+  nav a { color: var(--on-dark); text-decoration: none; font-weight: 550; font-size: 0.95rem; }
+  nav a:hover { color: #fff; }
+  .hdr__cta { padding: 12px 18px; font-size: 0.92rem; }
+  @media (max-width: 760px) {
+    nav { display: none; }
+    .hdr__cta { margin-left: auto; }
+  }
+</style>
