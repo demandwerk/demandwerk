@@ -1,12 +1,12 @@
 ---
+// Placeholder crescent until the real logo files are added.
 import { company } from '../site';
 ---
 <a class="logo" href="/" aria-label={`${company.name} home`}>
-  <svg viewBox="0 0 64 64" width="30" height="30" aria-hidden="true"><path d="M18 16h12c10 0 17 6.5 17 16s-7 16-17 16H18z" fill="none" stroke="var(--accent)" stroke-width="8" stroke-linejoin="round"/></svg>
-  <span>Demand<b>Werk</b></span>
+  <svg viewBox="0 0 64 64" width="34" height="34" aria-hidden="true"><path d="M44 9a24 24 0 1 0 12 33A19 19 0 1 1 44 9Z" fill="var(--teal)"/></svg>
+  <span>{company.name}</span>
 </a>
 
 <style>
   .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; font: 800 1.35rem/1 var(--display); font-stretch: 115%; letter-spacing: -0.02em; }
-  .logo b { font-weight: 800; color: var(--accent); }
 </style>
