@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import PostList from '../../../components/PostList.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import { blogCategories } from '../../../site';
+
+export function getStaticPaths() {
+  return blogCategories.map((c) => ({ params: { category: c.slug }, props: { category: c } }));
+}
+const { category } = Astro.props;
+const posts = (await getCollection('posts', (p) => !p.data.draft && p.data.category === category.slug)).sort((a, b) => +b.data.date - +a.data.date);
+---
+<Base title={category.title} description={category.blurb} noindex={!posts.length}>
+  <PageHero title={category.title} blurb={category.blurb} trail={[{ title: 'Blog', href: '/blog/' }]} cta={false} />
+  <section class="section">
+    <div class="wrap"><PostList posts={posts} /></div>
+  </section>
+  <CtaBand />
+</Base>

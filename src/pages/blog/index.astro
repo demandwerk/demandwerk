@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import PostList from '../../components/PostList.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { blogCategories } from '../../site';
+
+const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) => +b.data.date - +a.data.date);
+---
+<Base title="Blog" description="Plain-language opinions and how-tos on marketing, search, content and paid media.">
+  <PageHero title="Blog" blurb="Plain-language takes on marketing, search, content and paid media." cta={false} />
+  <section class="section">
+    <div class="wrap">
+      <ul class="cats">
+        <li><a href="/blog/" aria-current="page">All posts</a></li>
+        {blogCategories.map((c) => <li><a href={`/blog/${c.slug}/`}>{c.title}</a></li>)}
+      </ul>
+      <PostList posts={posts} />
+    </div>
+  </section>
+  <CtaBand />
+</Base>
+
+<style>
+  .cats { list-style: none; margin: 0 0 48px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .cats a { display: inline-block; padding: 8px 16px; border-radius: 999px; border: 1.5px solid var(--line); text-decoration: none; font-weight: 600; font-size: 0.92rem; }
+  .cats a:hover { border-color: var(--accent); }
+  .cats [aria-current] { background: var(--ink); border-color: var(--ink); color: #fff; }
+</style>

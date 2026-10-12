@@ -1,0 +1,61 @@
+---
+// Every page in the site map (src/site.ts): About, Services, Learn and their sub-pages.
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CardGrid from '../components/CardGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { sitePages, type SitePage } from '../site';
+
+export function getStaticPaths() {
+  return sitePages.map((page) => ({ params: { path: page.path }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: SitePage };
+const entry = await getEntry('pages', page.path);
+const Content = entry ? (await render(entry)).Content : null;
+
+const parent = page.trail.length ? sitePages.find((p) => p.href === page.trail.at(-1)!.href) : undefined;
+const siblings = (parent?.children ?? []).filter((c) => c.slug !== page.slug);
+---
+<Base title={page.title} description={entry?.data.description ?? page.blurb} noindex={!Content && !page.children}>
+  <PageHero title={page.title} blurb={page.blurb} trail={page.trail} />
+
+  {Content && (
+    <section class="section body">
+      <div class="wrap prose"><Content /></div>
+    </section>
+  )}
+
+  {page.children && (
+    <section class="section">
+      <div class="wrap">
+        <CardGrid items={page.children} base={page.href} />
+      </div>
+    </section>
+  )}
+
+  {!Content && !page.children && (
+    <section class="section">
+      <div class="wrap prose">
+        <p class="soon">We’re writing this page now. In the meantime, <a href="/contact/">let’s chat</a> about what you need.</p>
+      </div>
+    </section>
+  )}
+
+  {siblings.length > 0 && parent && (
+    <section class="section section--tint related">
+      <div class="wrap">
+        <span class="eyebrow">More in {parent.title}</span>
+        <CardGrid items={siblings} base={parent.href} />
+      </div>
+    </section>
+  )}
+
+  <CtaBand />
+</Base>
+
+<style>
+  .soon { font-size: 1.1rem; color: var(--muted); }
+  .related { padding: clamp(48px, 6vw, 80px) 0; }
+</style>

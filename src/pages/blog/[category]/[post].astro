@@ -1,0 +1,28 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import CtaBand from '../../../components/CtaBand.astro';
+import { blogCategories } from '../../../site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', (p) => !p.data.draft);
+  return posts.map((post) => ({ params: { category: post.data.category, post: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content } = await render(post);
+const category = blogCategories.find((c) => c.slug === post.data.category);
+const date = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' }).format(post.data.date);
+---
+<Base title={post.data.title} description={post.data.description}>
+  <PageHero
+    title={post.data.title}
+    blurb={date}
+    trail={[{ title: 'Blog', href: '/blog/' }, ...(category ? [{ title: category.title, href: `/blog/${category.slug}/` }] : [])]}
+    cta={false}
+  />
+  <article class="section">
+    <div class="wrap prose"><Content /></div>
+  </article>
+  <CtaBand />
+</Base>

@@ -1,29 +1,158 @@
 ---
+// Main menu, built from `nav` in src/site.ts. On wide screens the dropdowns open
+// on hover or with the arrow buttons; on phones the menu button opens a panel.
 import Logo from './Logo.astro';
 import { nav } from '../site';
+
+const path = Astro.url.pathname;
 ---
 <header class="hdr">
   <div class="wrap hdr__in">
     <Logo />
-    <nav aria-label="Main">
-      <ul>
-        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+    <nav class="nav" id="main-nav" aria-label="Main">
+      <ul class="nav__list">
+        {nav.map((item, i) => {
+          const links = item.node?.children ?? [];
+          const mega = links.some((l) => l.children);
+          const current = path.startsWith(item.href);
+          return (
+            <li class:list={['nav__item', { 'nav__item--mega': mega }]}>
+              <a class="nav__top" href={item.href} aria-current={current ? 'page' : undefined}>{item.label}</a>
+              <button class="nav__btn" type="button" aria-expanded="false" aria-controls={`menu-${i}`}>
+                <span class="visually-hidden">{item.label} menu</span>
+                <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <div class="menu" id={`menu-${i}`}>
+                {mega ? (
+                  <ul class="menu__mega">
+                    {links.map((l) => (
+                      <li>
+                        <a class="menu__head" href={`${item.href}${l.slug}/`}>{l.menuTitle ?? l.title}</a>
+                        {l.children && (
+                          <ul class="menu__sub">
+                            {l.children.map((c) => <li><a href={`${item.href}${l.slug}/${c.slug}/`}>{c.menuTitle ?? c.title}</a></li>)}
+                          </ul>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <ul class="menu__list">
+                    {links.map((l) => <li><a href={`${item.href}${l.slug}/`}>{l.title}</a></li>)}
+                    {item.links?.map((l) => <li><a href={l.href}>{l.title}</a></li>)}
+                  </ul>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </nav>
-    <a class="btn btn--primary hdr__cta" href="/#contact">Book a call</a>
+    <a class="btn btn--primary hdr__cta" href="/contact/">Let’s chat</a>
+    <button class="burger" type="button" aria-expanded="false" aria-controls="main-nav">
+      <span class="visually-hidden">Menu</span>
+      <span class="burger__bars" aria-hidden="true"></span>
+    </button>
   </div>
 </header>
 
-<style>
-  .hdr { position: sticky; top: 0; z-index: 50; background: rgb(255 255 255 / 92%); backdrop-filter: blur(10px); color: var(--ink); border-bottom: 1px solid var(--line); }
-  .hdr__in { display: flex; align-items: center; gap: 32px; height: 72px; }
-  nav { margin-left: auto; }
-  ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
-  nav a { color: var(--muted); text-decoration: none; font-weight: 550; font-size: 0.95rem; }
-  nav a:hover { color: var(--ink); }
-  .hdr__cta { padding: 12px 18px; font-size: 0.92rem; }
-  @media (max-width: 760px) {
-    nav { display: none; }
-    .hdr__cta { margin-left: auto; }
+<script>
+  const header = document.querySelector<HTMLElement>('.hdr')!;
+  const items = [...header.querySelectorAll<HTMLElement>('.nav__item')];
+  const burger = header.querySelector<HTMLButtonElement>('.burger')!;
+
+  const setOpen = (item: HTMLElement, open: boolean) => {
+    item.classList.toggle('is-open', open);
+    item.querySelector('.nav__btn')!.setAttribute('aria-expanded', String(open));
+  };
+  const closeAll = (except?: HTMLElement) => items.forEach((i) => i !== except && setOpen(i, false));
+
+  for (const item of items) {
+    item.querySelector('.nav__btn')!.addEventListener('click', () => {
+      const open = !item.classList.contains('is-open');
+      closeAll(item);
+      setOpen(item, open);
+    });
+    // Leaving a hovered menu also closes one opened with its button.
+    item.addEventListener('mouseleave', () => matchMedia('(hover: hover) and (min-width: 1000px)').matches && setOpen(item, false));
   }
+  burger.addEventListener('click', () => {
+    const open = !header.classList.contains('menu-open');
+    header.classList.toggle('menu-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+    document.documentElement.classList.toggle('no-scroll', open);
+  });
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && closeAll());
+  document.addEventListener('click', (e) => !header.contains(e.target as Node) && closeAll());
+</script>
+
+<style>
+  .hdr { position: sticky; top: 0; z-index: 50; background: rgb(255 255 255 / 94%); backdrop-filter: blur(10px); color: var(--ink); border-bottom: 1px solid var(--line); }
+  .hdr__in { position: relative; display: flex; align-items: center; gap: 24px; height: 72px; }
+  .hdr__cta { padding: 12px 20px; font-size: 0.92rem; white-space: nowrap; }
+  :global(html.no-scroll) { overflow: hidden; }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+  .nav { margin-left: auto; }
+  .nav__list { display: flex; align-items: center; gap: 6px; }
+  .nav__item { position: relative; display: flex; align-items: center; }
+  .nav__item--mega { position: static; }
+  .nav__top { padding: 10px 2px 10px 10px; color: var(--muted); text-decoration: none; font-weight: 580; font-size: 0.95rem; }
+  .nav__top:hover, .nav__top[aria-current] { color: var(--ink); }
+  .nav__btn { display: grid; place-items: center; width: 26px; height: 32px; padding: 0; border: 0; background: none; color: var(--muted); cursor: pointer; border-radius: 6px; }
+  .nav__btn svg { transition: transform .15s; }
+  .nav__item.is-open .nav__btn svg { transform: rotate(180deg); }
+
+  .menu a { text-decoration: none; color: var(--text); }
+  .menu a:hover { color: var(--accent-strong); }
+  .menu__list a { display: block; padding: 9px 14px; border-radius: 8px; font-size: 0.95rem; font-weight: 550; white-space: nowrap; }
+  .menu__list a:hover { background: var(--tint); }
+  .menu__mega { display: grid; grid-template-columns: repeat(5, 1fr); gap: 26px 28px; }
+  .menu__head { display: block; font: 700 0.98rem/1.25 var(--display); font-stretch: 112%; color: var(--ink) !important; padding-bottom: 8px; margin-bottom: 6px; border-bottom: 2px solid var(--accent); }
+  .menu__head:hover { color: var(--accent-strong) !important; }
+  .menu__sub a { display: block; padding: 4px 0; font-size: 0.88rem; color: var(--muted); }
+
+  /* Wide screens: dropdown panels. */
+  @media (min-width: 1000px) {
+    .burger { display: none; }
+    .menu {
+      position: absolute; top: 100%; left: 0; padding-top: 10px;
+      visibility: hidden; opacity: 0; transform: translateY(6px);
+      transition: opacity .15s, transform .15s, visibility 0s .15s;
+    }
+    .menu > ul { background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 10px; }
+    .nav__item--mega .menu { left: var(--gutter); right: var(--gutter); }
+    .menu__mega { padding: 28px !important; }
+    .nav__item:hover .menu, .nav__item:focus-within .menu, .nav__item.is-open .menu {
+      visibility: visible; opacity: 1; transform: none; transition-delay: 0s;
+    }
+  }
+  @media (min-width: 1000px) and (max-width: 1180px) { .menu__mega { grid-template-columns: repeat(4, 1fr); } }
+
+  /* Phones and tablets: the menu button opens a full-height panel. */
+  @media (max-width: 999px) {
+    .hdr__cta { margin-left: auto; padding: 10px 16px; }
+    .burger { display: grid; place-items: center; width: 44px; height: 44px; margin-right: -8px; border: 0; background: none; cursor: pointer; color: var(--ink); }
+    .burger__bars, .burger__bars::before, .burger__bars::after { display: block; width: 22px; height: 2px; background: currentColor; border-radius: 2px; transition: transform .2s, background .2s; }
+    .burger__bars { position: relative; }
+    .burger__bars::before, .burger__bars::after { content: ''; position: absolute; left: 0; }
+    .burger__bars::before { top: -7px; }
+    .burger__bars::after { top: 7px; }
+    .menu-open .burger__bars { background: transparent; }
+    .menu-open .burger__bars::before { transform: translateY(7px) rotate(45deg); }
+    .menu-open .burger__bars::after { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Absolute, not fixed: the header's backdrop-filter would trap a fixed panel inside it. */
+    .nav { display: none; position: absolute; top: calc(100% + 1px); left: 0; right: 0; height: calc(100dvh - 73px); overflow-y: auto; overscroll-behavior: contain; background: #fff; padding: 12px var(--gutter) 40px; margin: 0; }
+    .menu-open .nav { display: block; }
+    .nav__list { flex-direction: column; align-items: stretch; gap: 0; }
+    .nav__item { flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+    .nav__top { flex: 1; padding: 16px 0; font-size: 1.1rem; color: var(--ink); }
+    .nav__btn { width: 44px; height: 44px; }
+    .menu { display: none; width: 100%; padding: 0 0 16px; }
+    .nav__item.is-open .menu { display: block; }
+    .menu__list a { padding: 10px 12px; }
+    .menu__mega { grid-template-columns: 1fr 1fr; gap: 20px; }
+  }
+  @media (max-width: 560px) { .menu__mega { grid-template-columns: 1fr; } }
 </style>

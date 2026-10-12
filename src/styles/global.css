@@ -3,13 +3,14 @@
 @import '@fontsource-variable/inter';
 
 :root {
-  /* Teal and ink come from the logo. Copper (in place of the old site's brown)
-     is the tertiary color, used as warm shaded backgrounds. */
+  /* Bronze is the main accent. Teal and ink come from the logo; teal is the
+     secondary accent. -strong shades keep white text and small text readable (AA). */
+  --accent: #b5793a;          /* bronze: large text, rules, glows */
+  --accent-strong: #94622c;   /* buttons, small text */
+  --accent-hover: #7a5023;
+  --accent-tint: #f5ebdf;
   --teal: #3d867f;
-  --teal-strong: #337570;    /* buttons, small text and white-on-teal (AA) */
-  --teal-hover: #2a615c;
-  --copper: #b87333;
-  --copper-tint: #f6e9dd;
+  --teal-strong: #337570;
   --teal-tint: #e7f1ef;
 
   --ink: #1a1a1a;
@@ -18,7 +19,7 @@
   --muted: #5b6270;
   --line: #e4e6eb;
   --paper: #ffffff;
-  --tint: #fbf3ec;      /* light copper */
+  --tint: #f7f4ef;
 
   --display: 'Archivo Variable', 'Arial Narrow', Arial, sans-serif;
   --body: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -41,7 +42,7 @@ body {
 }
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-underline-offset: 3px; }
-:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 
 h1, h2, h3 {
   font-family: var(--display);
@@ -66,7 +67,7 @@ p { margin: 0 0 1em; }
   font: 700 0.78rem/1 var(--body);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--teal-strong);
+  color: var(--accent-strong);
   margin-bottom: 18px;
 }
 .lede { font-size: clamp(1.1rem, 1.6vw, 1.25rem); color: var(--muted); max-width: 60ch; }
@@ -77,9 +78,19 @@ p { margin: 0 0 1em; }
   padding: 16px 24px; border-radius: 999px; border: 2px solid transparent;
   text-decoration: none; cursor: pointer; transition: background .15s, color .15s, border-color .15s;
 }
-.btn--primary { background: var(--teal-strong); color: #fff; }
-.btn--primary:hover { background: var(--teal-hover); color: #fff; }
+.btn--primary { background: var(--accent-strong); color: #fff; }
+.btn--primary:hover { background: var(--accent-hover); color: #fff; }
 .btn--ghost { border-color: currentColor; color: inherit; }
 .btn--ghost:hover { background: rgb(26 26 26 / 5%); }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Long-form copy from Markdown (service pages, blog posts). */
+.prose { max-width: 70ch; }
+.prose h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); margin-top: 1.6em; }
+.prose h3 { margin-top: 1.4em; }
+.prose a { color: var(--accent-strong); }
+.prose ul, .prose ol { padding-left: 1.3em; margin: 0 0 1em; }
+.prose li { margin-bottom: 0.35em; }
+.prose blockquote { margin: 1.5em 0; padding: 4px 0 4px 20px; border-left: 3px solid var(--accent); color: var(--muted); }
+.prose img { border-radius: var(--radius); margin: 1.5em 0; }

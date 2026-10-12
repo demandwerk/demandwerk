@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { posts: CollectionEntry<'posts'>[] }
+const { posts } = Astro.props;
+const fmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' });
+---
+{posts.length ? (
+  <ul class="posts">
+    {posts.map((p) => (
+      <li>
+        <time datetime={p.data.date.toISOString()}>{fmt.format(p.data.date)}</time>
+        <h2><a href={`/blog/${p.data.category}/${p.id}/`}>{p.data.title}</a></h2>
+        <p>{p.data.description}</p>
+      </li>
+    ))}
+  </ul>
+) : (
+  <p class="empty">The first posts are on their way.</p>
+)}
+
+<style>
+  .posts { list-style: none; margin: 0; padding: 0; display: grid; gap: 40px; max-width: 760px; }
+  .posts li { padding-bottom: 40px; border-bottom: 1px solid var(--line); }
+  time { font-size: 0.85rem; color: var(--muted); }
+  h2 { font-size: clamp(1.4rem, 2.4vw, 1.8rem); margin: 6px 0 10px; }
+  h2 a { text-decoration: none; }
+  h2 a:hover { color: var(--accent-strong); }
+  p { color: var(--muted); margin: 0; }
+  .empty { font-size: 1.1rem; color: var(--muted); }
+</style>

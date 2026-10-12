@@ -1,0 +1,31 @@
+---
+interface Props { title: string; blurb?: string; trail?: { title: string; href: string }[]; cta?: boolean }
+const { title, blurb, trail = [], cta = true } = Astro.props;
+---
+<section class="phero">
+  <div class="wrap">
+    <nav aria-label="Breadcrumb">
+      <ol class="crumbs">
+        <li><a href="/">Home</a></li>
+        {trail.map((t) => <li><a href={t.href}>{t.title}</a></li>)}
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
+    <h1>{title}</h1>
+    {blurb && <p class="lede">{blurb}</p>}
+    {cta && <a class="btn btn--primary" href="/contact/">Let’s chat</a>}
+  </div>
+</section>
+
+<style>
+  .phero { background: var(--tint); padding: clamp(40px, 6vw, 72px) 0 clamp(48px, 7vw, 88px); position: relative; overflow: hidden; }
+  .phero::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(520px 340px at 90% 0%, rgb(181 121 58 / 16%), transparent 70%); }
+  .phero .wrap { position: relative; }
+  .phero h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); max-width: 20ch; }
+  .phero .lede { margin-bottom: 28px; }
+  .crumbs { list-style: none; margin: 0 0 28px; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 0; font-size: 0.85rem; color: var(--muted); }
+  .crumbs li + li::before { content: '/'; margin: 0 8px; color: #b9bdc5; }
+  .crumbs a { color: var(--muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--accent-strong); text-decoration: underline; }
+  .crumbs [aria-current] { color: var(--ink); font-weight: 600; }
+</style>

@@ -1,0 +1,20 @@
+---
+interface Props { heading?: string; body?: string }
+const { heading = 'Let’s talk about your goals', body = 'Tell us where you want to grow. We’ll tell you plainly what we’d do first, and whether we’re the right fit.' } = Astro.props;
+---
+<section class="cta">
+  <div class="wrap cta__in">
+    <div>
+      <h2>{heading}</h2>
+      <p class="lede">{body}</p>
+    </div>
+    <a class="btn btn--primary" href="/contact/">Let’s chat</a>
+  </div>
+</section>
+
+<style>
+  .cta { background: var(--teal-tint); padding: clamp(56px, 8vw, 96px) 0; }
+  .cta__in { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 24px 48px; }
+  .cta h2 { margin-bottom: 10px; }
+  .cta .lede { margin: 0; }
+</style>
