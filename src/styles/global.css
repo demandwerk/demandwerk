@@ -5,18 +5,15 @@
   /* Copper replaces the old site's brown (#8d6d36); teal and ink come from the logo. */
   --copper: #b87333;
   --copper-strong: #a85f27;   /* buttons and small text on white (AA with white) */
-  --copper-hover: #8f4f1f;
-  --copper-on-dark: #d48d50;
+  --copper-hover: #8f4f1f;   /* also small labels on tinted backgrounds */
   --copper-tint: #f8ede4;
   --teal: #3d867f;
-  --teal-on-dark: #5fb3aa;
   --teal-tint: #e7f1ef;
 
   --ink: #1a1a1a;
   --ink-2: #242424;
   --text: #1d2129;
   --muted: #5b6270;
-  --on-dark: #cfcac3;
   --line: #e4e6eb;
   --paper: #ffffff;
   --tint: #f7f4ef;
@@ -61,20 +58,16 @@ p { margin: 0 0 1em; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
 .section { padding: clamp(64px, 9vw, 120px) 0; }
 .section--tint { background: var(--tint); }
-.section--dark { background: var(--ink); color: var(--on-dark); }
-.section--dark h2, .section--dark h3 { color: #fff; }
 
 .eyebrow {
   display: inline-block;
   font: 700 0.78rem/1 var(--body);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--copper-strong);
+  color: var(--copper-hover);
   margin-bottom: 18px;
 }
 .lede { font-size: clamp(1.1rem, 1.6vw, 1.25rem); color: var(--muted); max-width: 60ch; }
-.section--dark .lede { color: var(--on-dark); }
-.section--dark .eyebrow { color: var(--copper-on-dark); }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -85,6 +78,6 @@ p { margin: 0 0 1em; }
 .btn--primary { background: var(--copper-strong); color: #fff; }
 .btn--primary:hover { background: var(--copper-hover); color: #fff; }
 .btn--ghost { border-color: currentColor; color: inherit; }
-.btn--ghost:hover { background: rgb(255 255 255 / 8%); }
+.btn--ghost:hover { background: rgb(26 26 26 / 5%); }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
